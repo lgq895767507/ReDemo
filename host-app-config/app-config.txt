@@ -1,0 +1,23 @@
+// 注释标志<//>
+// warning!!!!!!  注意不要随意的修改 这个文件的格式
+// env 1.正式模式 2.debug模式
+// type 1 强制升级 2.推荐更新
+// desc 升级的描述
+// 04fc54a605f5d8230a52cfff 极光的appid
+// demoapp1 需要copy的文件家夹名字
+// hostAppId=包名
+// copyLogo logo 配置   -- 必须是 png 格式  不配置 走默认图
+// startPng 启动图配置   -- 必须是 png 格式  不配置 走默认图
+
+// ！！！！！！管理后台的app状态只能选择 未开通和主包，其他不能选择
+
+// 测试（主包） 包  ！！！！！注意：不要使用 com.bxvip 和co.bxvip 前缀的 applicationId做包名  系统占用！！！！！
+// SDKdemo （主包）内部 测试包  演示使用  这套个是我们对外测试包的配置app，可以忽视 app的更新
+bxvipqa=暴雪QA=com.bxvip.app.bxvipqa env=1 type=2 desc=发现新版本 a58f18e25a07e3fabdcacb00 copyLogo=sdk
+// demo 迅盈 正式包 测试包  演示使用
+demoapp1=迅盈时时彩demo1=co.tiangongsky.bxsdk.demoapp1 env=1 type=2 desc=1.第一版测试 d73f39a36e5a3b948ef6fe7b copyLogo=sdk
+// 跳转（未开通） 马甲内容的测试包 测试包  演示使用
+majiassc=马甲时时彩=com.shishicai env=1 type=2 desc=1.第一版测试 95b48102f336e21ff2ce688e startPng=majiasscstart copyLogo=sdk
+
+// *****************************需要自己配置包名***********************************
+//majiassc=马甲时时彩=co.tiangongsky.bxsdk.majiassc2 env=1 type=2 desc=1.第一版测试 d73f39a36e5a3b948ef6fe7b startPng=majiasscstart copyLogo=sdk

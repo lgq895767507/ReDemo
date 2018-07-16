@@ -1,0 +1,59 @@
+// 移除 debug label icon
+task removeDebugLabelIcon() {
+    doLast {
+        // 找到编译好的文件路径
+        def path = "$buildDir/intermediates/manifests/full/debug/AndroidManifest.xml"
+        println(path)
+        def sourceFile = new File(path)
+        if (sourceFile.exists()) {
+            //读取文件，并装进List。
+            def list = []
+            sourceFile.withReader('UTF-8') { reader ->
+                reader.eachLine {
+                    if (it.contains('android:icon')) {
+                        println(it)
+                    } else if (it.contains('android:label')) {
+                        println(it)
+                    } else {
+                        list.add(it + "\n")
+                    }
+                }
+            }
+            sourceFile.withWriter('UTF-8') { writer ->
+                list.each {
+                    writer.write(it)
+                }
+            }
+        }
+    }
+}
+
+// 移除 release label icon
+task removeReleaseLabelIcon() {
+    doLast {
+        // 找到编译好的文件路径
+        def path = "$buildDir/intermediates/manifests/full/release/AndroidManifest.xml"
+        println(path)
+        def sourceFile = new File(path)
+        if (sourceFile.exists()) {
+            //读取文件，并装进List。
+            def list = []
+            sourceFile.withReader('UTF-8') { reader ->
+                reader.eachLine {
+                    if (it.contains('android:icon')) {
+                        println(it)
+                    } else if (it.contains('android:label')) {
+                        println(it)
+                    } else {
+                        list.add(it + "\n")
+                    }
+                }
+            }
+            sourceFile.withWriter('UTF-8') { writer ->
+                list.each {
+                    writer.write(it)
+                }
+            }
+        }
+    }
+}

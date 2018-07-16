@@ -1,0 +1,5 @@
+// host
+include ':host'
+// plugin
+include ':plugin-demo'
+include ':plugin-nosdklib'

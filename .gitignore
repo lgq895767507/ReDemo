@@ -1,0 +1,15 @@
+*.iml
+*.log
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+
+/temp
+/apk
+/libs-pro-local-repo
+
+/host-app-config/temp

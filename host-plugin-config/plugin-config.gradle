@@ -1,0 +1,35 @@
+ext {
+
+    // pro 业主正式版环境
+    proVersion = 101
+    proVersionName = '1.0.1'
+
+    // test 测试环境版本号
+    testVersion = 165
+    testVersionName = '1.6.5'
+
+    // !!!!!!!!!!!!!!!!!!! plugin 开关的模式 !!!!!!!!!!!!!!  打包插件的开关
+    isPlugin = true
+
+    // !!!!!!!!!!!!!!!!!!! 编译 setting 开关的模式 !!!!!!!!!!!!!!
+    isSettingRun = false
+    // // 测试 包  ！！！！！注意：不要使用 com.bxvip 和co.bxvip 前缀的 applicationId做包名  sdk系统占用！！！！！
+    // 方式2 的接入模式配置
+    pluginConfigs = [
+            // plugin-demo 工程
+            "plugin-demo": [
+                    pliginIsInner    : true, // 内置，外置插件
+                    pluginPackageName: 'com.tiangong.android.plugin.demo', // 插件的包名
+                    pluginVersion    : 100, // 版本号
+                    pluginVer        : 100, // 插件的版本 ， 升级的需要
+                    pluginVersionName: "1.0.0", // 版本名称
+            ],// plugin-nosdklib 工程
+            "plugin-nosdklib": [
+                    pliginIsInner    : true, // 内置，外置插件
+                    pluginPackageName: 'com.tiangong.plugin.nosdklib', // 插件的包名
+                    pluginVersion    : 100, // 版本号
+                    pluginVer        : 100, // 插件的版本 ， 升级的需要
+                    pluginVersionName: "1.0.0", // 版本名称
+            ],
+    ]
+}

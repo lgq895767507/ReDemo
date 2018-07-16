@@ -1,0 +1,135 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+def rootPath = getRootDir().absolutePath
+def cName = getName()
+
+def modelConfig = pluginConfigs[cName]
+
+println("plugin-config: $modelConfig")
+
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    signingConfigs {
+        release {
+            // 签名
+            keyAlias signingRelease.keyAlias
+            keyPassword signingRelease.keyPassword
+            storeFile signingRelease.storeFile
+            storePassword signingRelease.storePassword
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    aaptOptions {
+        cruncherEnabled = false
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        applicationId modelConfig["pluginPackageName"]
+        versionCode modelConfig["pluginVersion"]
+        versionName modelConfig["pluginVersionName"]
+        buildConfigField "boolean", "isPlugin", "$isPlugin"
+
+        manifestPlaceholders = [
+                pluginVer: modelConfig["pluginVer"],
+        ]
+    }
+
+    buildTypes {
+        release {
+            shrinkResources false//打开资源压缩
+            signingConfig signingConfigs.release //Add your own signing config
+        }
+    }
+
+}
+
+dependencies {
+    implementation repluginplugin
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "com.android.support:support-v4:$buildToolsVersion"
+    implementation "com.android.support:appcompat-v7:$buildToolsVersion"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+if (isPlugin) {
+    // 这个plugin需要放在android配置之后，因为需要读取android中的配置项
+    apply plugin: 'replugin-plugin-gradle'
+    repluginPluginConfig {
+        pluginName = modelConfig["pluginPackageName"]
+        hostApplicationId = "co.tiangongsky.bxsdkdemo"
+        hostAppLauncherActivity = "co.tiangongsky.bxsdkdemo.ui.start.StartActivity"
+    }
+
+    // debug
+
+    def extName = '.jar'
+    def folder = 'plugins'
+    if (!modelConfig['pliginIsInner']) {
+        extName = '.apk'
+        folder = 'external'
+    }
+    task "buildDebug${cName}JarToHost"(type: Copy, dependsOn: ['assembleDebug']) {
+        group 'abuildjartohost'
+        from("$rootPath/$cName/build/outputs/apk/debug/$cName-debug.apk") //从这个目录下取出默认apk包
+        into("$rootPath/host/src/main/assets/$folder/") //将jar包输出到指定目录下
+        rename("$cName-debug.apk", "$cName-debug$extName") //自定义jar包的名字
+    }
+
+    task buildDebugJarToHost(dependsOn: "buildDebug${cName}JarToHost") {
+        group 'abuildjartohost'
+    }
+
+    task "buildRelease${cName}JarToHost"(type: Copy, dependsOn: ['assembleRelease']) {
+        group 'abuildjartohost'
+        from("$rootPath/$cName/build/outputs/apk/release/$cName-release.apk") //从这个目录下取出默认apk包
+        into("$rootPath/host/src/main/assets/$folder/") //将jar包输出到指定目录下
+        rename("$cName-release.apk", "${modelConfig["pluginPackageName"]}$extName") //自定义jar包的名字
+    }
+
+    task buildReleaseJarToHost(dependsOn: "buildRelease${cName}JarToHost") {
+        group 'abuildjartohost'
+    }
+
+    task "buildRelease${cName}ApkProduce"(type: Copy, dependsOn: ['assembleRelease']) {
+        group 'abuildproduceapk'
+        from("$rootPath/$cName/build/outputs/apk/release/$cName-release.apk") //从这个目录下取出默认apk包
+        into("$rootPath/apk/plugins") //将jar包输出到指定目录下
+        rename("$cName-release.apk", "${modelConfig["pluginPackageName"]}_${modelConfig["pluginVersion"]}.apk")
+        //自定义jar包的名字
+    }
+
+    task buildReleaseApkProduce(dependsOn: "buildRelease${cName}ApkProduce") {
+        group 'abuildproduceapk'
+    }
+
+    // 导入 移除的模块
+    apply from: "../host-plugin-config/remoceLabelIcon.gradle"
+
+    afterEvaluate {
+        tasks.matching {
+            // processDebugManifest
+            it.name.startsWith('process') && (it.name.endsWith('ReleaseResources') || it.name.endsWith('DebugResources'))
+        }.each { tk ->
+            if (tk.name.contains("DebugResources"))
+                tk.dependsOn(removeDebugLabelIcon)
+            else if (tk.name.contains("ReleaseResources"))
+                tk.dependsOn(removeReleaseLabelIcon)
+        }
+    }
+}

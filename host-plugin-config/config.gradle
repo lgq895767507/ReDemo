@@ -1,0 +1,75 @@
+ext {
+
+    signingRelease = [
+            keyAlias     : 'mjkeystore',
+            keyPassword  : 'mj0567aa',
+            storeFile    : file('jks/mjkeystore.jks'),
+            storePassword: 'mj0567aa'
+    ]
+
+    buildToolsVersion = '26.0.2'
+    compileSdkVersion = 26
+    minSdkVersion = 14
+    targetSdkVersion = 26
+
+    espressoVersion = '3.0.1'
+
+    zxingVersion = '3.3.0'
+
+
+    anko_version = '0.10.5'
+
+    replugin_version = '2.2.4'
+
+    glideVersion = '3.7.0'
+    okhttp_version = '3.10.0'
+    gsonVersion = '2.8.2'
+
+    // re plugin
+    repluginplugin = "com.qihoo360.replugin:replugin-plugin-lib:$replugin_version"
+
+
+    ormLiteVersion = '5.1'
+    ormLite = [
+            ormLiteCore   : "com.j256.ormlite:ormlite-core:$ormLiteVersion",
+            ormLiteAndroid: "com.j256.ormlite:ormlite-android:$ormLiteVersion",
+    ]
+
+
+    okhttp = "com.squareup.okhttp3:okhttp:$okhttp_version"
+    gson = "com.google.code.gson:gson:$gsonVersion"
+    // http 网络
+    http = [
+            gson  : gson,
+            okhttp: okhttp
+    ]
+
+    // zxing
+    zxing = "com.google.zxing:core:$zxingVersion"
+
+    // anko
+    anko = "org.jetbrains.anko:anko:$anko_version"
+    ankocommons = "org.jetbrains.anko:anko-commons:$anko_version"
+
+    ormLiteLibs = ormLite.values()
+    httpLibs = http.values()
+
+    jitParkAndroidSupportVersion = '26.0.2.10'
+    jitParkSupportHttpVersion = '1.0.10.5.5'
+    jitParkLibUpdateVersion = '1.0.1'
+    jitParkWidgetLibVersion = '1.0.1'
+    jitParkScrollablepanelLibVersion = '1.0.1'
+    jitParkCleanMvpLibVersion = '1.0.1'
+
+    newSupportV4AndRecyclerViewAar = "com.github.bxvip:android-support:$jitParkAndroidSupportVersion"
+    newLibHttpAar = "com.github.bxvip:support-http:$jitParkSupportHttpVersion"
+    newLibUiToCleanMvpPluginAar = "com.github.bxvip:bx-lib-ui-tocleanmvp:$jitParkCleanMvpLibVersion-plugin"
+    newLibUiToCleanMvpNotPluginAar = "com.github.bxvip:bx-lib-ui-tocleanmvp:$jitParkCleanMvpLibVersion-notplugin"
+    newLibUiWidgetAar = "com.github.bxvip:bx-lib-ui-widget:$jitParkLibUpdateVersion"
+    newLibUpdateAar = "com.github.bxvip:bx-lib-update:$jitParkLibUpdateVersion"
+
+    eventbusVersion = '3.0.0'
+    // 图片
+    glide = "com.github.bumptech.glide:glide:$glideVersion"
+    eventbus = "org.greenrobot:eventbus:$eventbusVersion"
+}

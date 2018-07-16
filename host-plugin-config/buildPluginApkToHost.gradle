@@ -1,0 +1,131 @@
+def rootPath = getRootDir().absolutePath
+def cName = getName()
+
+def modelConfig = pluginConfigs[cName]
+
+println("plugin-config: $modelConfig")
+
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    signingConfigs {
+        release {
+            // 签名
+            keyAlias signingRelease.keyAlias
+            keyPassword signingRelease.keyPassword
+            storeFile signingRelease.storeFile
+            storePassword signingRelease.storePassword
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    aaptOptions {
+        cruncherEnabled = false
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        applicationId modelConfig["pluginPackageName"]
+        versionCode modelConfig["pluginVersion"]
+        versionName modelConfig["pluginVersionName"]
+        buildConfigField "boolean", "isPlugin", "$isPlugin"
+
+        manifestPlaceholders = [
+                pluginVer: modelConfig["pluginVer"],
+        ]
+    }
+
+    buildTypes {
+        release {
+            shrinkResources false//打开资源压缩
+            signingConfig signingConfigs.release //Add your own signing config
+        }
+    }
+}
+
+dependencies {
+    implementation repluginplugin
+    if (isPlugin) {
+        provided "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    } else {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    }
+}
+
+configurations {
+    all*.exclude group: 'com.android.support'
+}
+
+if (isPlugin) {
+    // 这个plugin需要放在android配置之后，因为需要读取android中的配置项
+    apply plugin: 'replugin-plugin-gradle'
+    repluginPluginConfig {
+        pluginName = modelConfig["pluginPackageName"]
+        hostApplicationId = "co.tiangongsky.bxsdkdemo"
+        hostAppLauncherActivity = "co.tiangongsky.bxsdkdemo.ui.start.StartActivity"
+    }
+
+    // debug
+
+    def extName = '.jar'
+    def folder = 'plugins'
+    if (!modelConfig['pliginIsInner']) {
+        extName = '.apk'
+        folder = 'external'
+    }
+    task "buildDebug${cName}JarToHost"(type: Copy, dependsOn: ['assembleDebug']) {
+        group 'abuildjartohost'
+        from("$rootPath/$cName/build/outputs/apk/debug/$cName-debug.apk") //从这个目录下取出默认apk包
+        into("$rootPath/host/src/main/assets/$folder/") //将jar包输出到指定目录下
+        rename("$cName-debug.apk", "$cName-debug$extName") //自定义jar包的名字
+    }
+
+    task buildDebugJarToHost(dependsOn: "buildDebug${cName}JarToHost") {
+        group 'abuildjartohost'
+    }
+
+    task "buildRelease${cName}JarToHost"(type: Copy, dependsOn: ['assembleRelease']) {
+        group 'abuildjartohost'
+        from("$rootPath/$cName/build/outputs/apk/release/$cName-release.apk") //从这个目录下取出默认apk包
+        into("$rootPath/host/src/main/assets/$folder/") //将jar包输出到指定目录下
+        rename("$cName-release.apk", "${modelConfig["pluginPackageName"]}$extName") //自定义jar包的名字
+    }
+
+    task buildReleaseJarToHost(dependsOn: "buildRelease${cName}JarToHost") {
+        group 'abuildjartohost'
+    }
+
+    task "buildRelease${cName}ApkProduce"(type: Copy, dependsOn: ['assembleRelease']) {
+        group 'abuildproduceapk'
+        from("$rootPath/$cName/build/outputs/apk/release/$cName-release.apk") //从这个目录下取出默认apk包
+        into("$rootPath/apk/plugins") //将jar包输出到指定目录下
+        rename("$cName-release.apk", "${modelConfig["pluginPackageName"]}_${modelConfig["pluginVersion"]}.apk")
+        //自定义jar包的名字
+    }
+
+    task buildReleaseApkProduce(dependsOn: "buildRelease${cName}ApkProduce") {
+        group 'abuildproduceapk'
+    }
+
+    // 导入 移除的模块
+    apply from: "../host-plugin-config/remoceLabelIcon.gradle"
+
+    afterEvaluate {
+        tasks.matching {
+            // processDebugManifest
+            it.name.startsWith('process') && (it.name.endsWith('ReleaseResources') || it.name.endsWith('DebugResources'))
+        }.each { tk ->
+            if (tk.name.contains("DebugResources"))
+                tk.dependsOn(removeDebugLabelIcon)
+            else if (tk.name.contains("ReleaseResources"))
+                tk.dependsOn(removeReleaseLabelIcon)
+        }
+    }
+}

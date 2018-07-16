@@ -1,0 +1,129 @@
+import groovy.json.JsonOutput
+
+def createFileName = "app-config.txt"
+def temAppFileName = 'createApp.json'
+def apkJsonInfoName = 'apkJsonInfo.json'
+
+// 开始job
+println("------------------------------------------------------------\n" +
+        " Start config multi Application \n" +
+        "------------------------------------------------------------")
+
+def modelPath = getRootDir().getAbsolutePath() + "/" + getName()
+
+def hostResPath = getRootDir().getAbsolutePath() + "/host-app-config"
+
+// 临时文件 判断是否存在
+def tempRoot = new File(hostResPath + "/temp")
+if (!tempRoot.exists()) {
+    tempRoot.mkdirs()
+}
+def temFile = new File(tempRoot, temAppFileName)
+if (temFile.exists()) temFile.delete() // 删除旧文件
+if (!temFile.exists()) temFile.createNewFile() // 删除旧文件
+
+// 需要产生的 目标文件
+def sourceFile = new File(hostResPath, createFileName)
+if (!sourceFile.exists()) return
+def sourceLines = sourceFile.readLines()
+if (sourceLines.empty) return
+
+// 获取时间的函数
+def releaseTime(def hous = false) {
+    if (hous) {
+        return new Date().format("yyyy年MM月dd日 HH:mm:ss")
+    } else
+        return new Date().format("yyyyMMdd")
+}
+
+println(temFile.absolutePath)
+println(modelPath)
+
+def resultJsonList = []
+def outMap = [:]
+sourceLines.each { line -> // 一行信息
+//    println("$line")
+    if (line != null && line != "" && !line.startsWith("//") && line.length() > 30) {// 过滤无效的注解 和 空行
+        def spitLines = line.split(" ")
+        def map = [:]
+        def appInfo = spitLines[0].split("=")
+        def flavorName = appInfo[0]
+
+        map.put("code", flavorName.contains("demoapp1") ? testVersion : proVersion)
+        map.put("name", flavorName.contains("demoapp1") ? testVersionName : proVersionName)
+        map.put("applicationId", appInfo[2])
+
+        map.put("env", spitLines[1].split("=")[1])
+        map.put("type", spitLines[2].split("=")[1])
+        map.put("desc", spitLines[3].split("=")[1])
+        map.put("packTime", releaseTime(true))
+
+        /**********************copy file start**********************/
+        def copyResPath = "$hostResPath/MainPng" // logo start 地址仓库
+        def copyToPath = "$modelPath/src/${flavorName}/res/mipmap-xxhdpi"
+
+        def logoName = flavorName
+        if (line.contains("copyLogo=")) {
+            def index = line.indexOf("copyLogo=")// 字符串下标
+            def temStr = line.substring(index)
+            logoName = temStr.split(" ")[0].split("=")[1]
+        }
+
+        def copyOldLogoPath = "$copyResPath/${logoName}logo.png"
+        def copyNewLogoPath = "$copyToPath/logo.png"
+        GFileUtils.copyFile(new File(copyOldLogoPath), new File(copyNewLogoPath))
+
+        def startName = "start"
+        if (line.contains("startPng=")) {
+            def index = line.indexOf("startPng=")// 字符串下标
+            def temStr = line.substring(index)
+            startName = temStr.split(" ")[0].split("=")[1]
+        }
+        // start.png
+        def copyOldStartPath = "$copyResPath/${startName}.png"
+        def copyNewStartPath = "$copyToPath/start.png"
+        GFileUtils.copyFile(new File(copyOldStartPath), new File(copyNewStartPath))
+
+        /**********************copy file end************************/
+
+        /***********************assets start json************************/
+        def filePath = new File("$modelPath/src/${flavorName}/assets/")
+        if (!filePath.exists()) filePath.mkdirs() // 创建目录
+        def jsonFile = new File(filePath, apkJsonInfoName)
+        if (!jsonFile.exists()) jsonFile.createNewFile()
+        jsonFile.write(JsonOutput.toJson(map))
+
+        def ignoreFile = new File("$modelPath/.gitignore")
+        def ignoreFileLines = ignoreFile.readLines()
+
+        def strLine = '/src/' + "${flavorName}"
+        def strImg = ""
+        if (!ignoreFileLines.contains(strLine + strImg)) {
+            ignoreFile.append("\n" + strLine + strImg)
+        }
+
+        /***********************assets end json************************/
+        map.put("flavor", appInfo[0])
+        def hostAppId = ""
+        map.put("appName", appInfo[1])
+        map.put("jgkey", spitLines[4])
+        // 马甲包处理 预留强更新
+        if (line.contains("hostAppId")) {
+            def index = line.indexOf("hostAppId=")// 字符串下标
+            def temStr = line.substring(index)
+            hostAppId = temStr.split(" ")[0].split("=")[1]
+            println(hostAppId)
+        }
+        map.put("hostAppId", hostAppId)
+
+        resultJsonList.add(map)
+
+    }
+    outMap.put("outApkFolder", createFileName)
+    outMap.put("flavorInfoLists", resultJsonList)
+    temFile.write(JsonOutput.toJson(outMap))
+}
+
+println("------------------------------------------------------------\n" +
+        " End config multi Application \n" +
+        "------------------------------------------------------------")

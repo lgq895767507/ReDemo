@@ -1,0 +1,158 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+def sJpush = "3.1.1", // maven sJpush远程库版本
+    sJcore = "1.1.9", // maven sJcore远程库版本
+    sjanalytics = "1.2.0" // maven sjanalytics远程库版本
+
+
+apply from: "../host-app-config/create-host-variant.gradle"
+
+// 获取时间的函数
+def releaseTime(def hous = false) {
+    if (hous) {
+        return new Date().format("yyyyMMdd_HH_mm_ss")
+    } else
+        return new Date().format("yyyyMMdd")
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    lintOptions {
+        abortOnError false
+    }
+
+    signingConfigs {
+        release {
+            keyAlias signingRelease.keyAlias
+            keyPassword signingRelease.keyPassword
+            storeFile signingRelease.storeFile
+            storePassword signingRelease.storePassword
+        }
+    }
+
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        applicationId "co.tiangongsky.bxsdk.demoapp1"
+        versionCode testVersion
+        versionName testVersionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        resValue "string", "app_name", "时时彩demo1"
+        buildConfigField "String", "hostAppId", "\"\""
+        buildConfigField "String", "APP_NAME", "\"时时彩demo1\""
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: applicationId,
+                JPUSH_APPKEY : "ca733c0a9dbea30598af62d9", //JPush上注册的包名对应的// appkey.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+        ]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+
+    def hostResPath = getRootDir().getAbsolutePath() + "/host-app-config"
+    def jsonInfos = new groovy.json.JsonSlurper().parseText(new File("$hostResPath/temp/createApp.json").text)
+    // 获取json 里的数据
+    def outApkFolderName = jsonInfos.outApkFolder
+    def flavorsInfos = jsonInfos.flavorInfoLists
+
+    // apk 打包输出位置
+
+    applicationVariants.all { variant ->
+        //这个修改输出的APK路径
+        if (variant.buildType.name != "debug") {//防止AS无法安装debug包(apk)
+            variant.getPackageApplication().outputDirectory = new File(project.rootDir.absolutePath + "/apk/$outApkFolderName/${releaseTime()}/${variant.versionName}")
+
+            variant.getPackageApplication().outputScope.apkDatas.forEach { apkData ->
+                //这个修改输出APK的文件名
+                apkData.outputFileName = variant.flavorName + ".apk"
+            }
+        }
+    }
+    flavorDimensions "pro" // 3.0 特性
+    flavorsInfos.each { infoMap ->
+        productFlavors {
+            assert infoMap instanceof Map
+            String name = infoMap.get("flavor")
+            "$name" {
+                // 配置马甲 主包的包名
+                dimension "pro" // 3.0 特性
+                buildConfigField "String", "hostAppId", "\"${infoMap.get("hostAppId")}\""
+                buildConfigField "String", "APP_NAME", "\"${infoMap.get("appName")}\""
+                resValue "string", "app_name", "${infoMap.get("appName")}"
+
+                applicationId = infoMap.get("applicationId")
+                versionCode = infoMap.get("code")
+                versionName = infoMap.get("name")
+
+                manifestPlaceholders = [
+                        JPUSH_PKGNAME: "${applicationId}",
+                        JPUSH_APPKEY : "${infoMap.get("jgkey")}", //JPush上注册的包名对应的// appkey.
+                        JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+                ]
+            }
+        }
+    }
+}
+
+// ATTENTION!!! Must be PLACED AFTER "android{}" to read the applicationId
+apply plugin: 'replugin-host-gradle'
+
+/**
+ * 配置项均为可选配置，默认无需添加
+ * 更多可选配置项参见replugin-host-gradle的RepluginConfig类
+ * 可更改配置项参见 自动生成RePluginHostConfig.java
+ */
+repluginHostConfig {
+
+    /**
+     * 主包不使用
+     */
+    useAppCompat = false
+}
+
+dependencies {
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "cn.jiguang.sdk:jpush:$sJpush"
+    implementation "cn.jiguang.sdk:jcore:$sJcore"
+    implementation "cn.jiguang.sdk:janalytics:$sjanalytics"
+
+    implementation anko, ankocommons, glide, eventbus, ormLiteLibs
+    implementation newLibHttpAar, newSupportV4AndRecyclerViewAar
+    // add date : 2018-06-09
+    implementation "com.qihoo360.replugin:replugin-host-lib:$replugin_version"
+    // add date : 2018-06-09
+    implementation httpLibs
+    // zxing
+    implementation zxing
+}
+// copy http lib to git http lib
+def gitHttpPath = rootDir.absolutePath + "/into-plugin"
+
+println("copy libs jar:$gitHttpPath")
+
+def gitHttpPathFile = new File(gitHttpPath)
+if (gitHttpPathFile.exists()) {
+    println("copy libs jar:$name start!")
+    GFileUtils.copyDirectory(gitHttpPathFile,new File(projectDir.absolutePath + "/src/main/assets/plugins"))
+    println("copy libs jar:$name succeed!")
+} else {
+    println("copy libs jar:$name not exists!")
+}
+

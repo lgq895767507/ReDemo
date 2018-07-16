@@ -1,0 +1,18 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply from: "../host-plugin-config/buildPluginApkToHost.gradle"
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    if (isPlugin) {
+        compileOnly anko, ankocommons, glide, eventbus
+        implementation newLibUiToCleanMvpPluginAar
+        compileOnly newLibHttpAar, newSupportV4AndRecyclerViewAar
+    } else {
+        implementation anko, ankocommons, glide, eventbus
+        implementation newLibUiToCleanMvpNotPluginAar
+        implementation newLibHttpAar, newSupportV4AndRecyclerViewAar
+    }
+}

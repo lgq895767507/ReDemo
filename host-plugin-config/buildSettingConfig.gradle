@@ -1,0 +1,108 @@
+def rootPath = getRootDir().absolutePath
+
+// plugin 插件打包
+if (rootProject.ext.isSettingRun) {
+    task buildPluginConfig() {
+        def res = ""
+        // host
+        res += "// host\ninclude ':host'\n"
+        // plugin
+        res += "// plugin\n"
+        pluginConfigs.forEach { key, value ->
+            res += "include ':$key'\n"
+            // 创建插件
+            createPlugin(key, value)
+        }
+
+        def settingFile = new File(rootPath + '/settings.gradle')
+        if (settingFile.exists() && settingFile.text != res.toString()) {
+            settingFile.delete()
+            settingFile.createNewFile()
+            settingFile.append(res)
+        }
+
+        // 修改文件的状态
+        def path = "$rootDir/host-plugin-config/plugin-config.gradle"
+        def sourceFile = new File(path)
+        if (sourceFile.exists()) {
+            //读取文件，并装进List。
+            def list = []
+            sourceFile.withReader('UTF-8') { reader ->
+                reader.eachLine {
+                    if (it.contains('isSettingRun = true')) {
+                        list.add(it.replace('isSettingRun = true', 'isSettingRun = false\n'))
+                    } else {
+                        list.add(it + "\n")
+                    }
+                }
+            }
+            sourceFile.withWriter('UTF-8') { writer ->
+                list.each {
+                    writer.write(it)
+                }
+            }
+        }
+    }
+}
+
+def createPlugin(pluginName, value) {
+    def pluginFolder = new File("$rootDir/$pluginName/")
+    if (!pluginFolder.exists()) {
+        pluginFolder.mkdirs()
+        // 获取包名：
+        def packageName = value['pluginPackageName']
+        def javaPackagePathFile = new File(pluginFolder, "/src/main/java/${packageName.toString().replace(".", "/")}")
+        if (!javaPackagePathFile.exists()) javaPackagePathFile.mkdirs()
+        def tempPathFile = new File("$rootDir/host-plugin-template/")
+        if (tempPathFile.exists()) {
+            fileTree(tempPathFile).each { file ->
+                if (file.absolutePath.contains("App.kt") || file.absolutePath.contains("MainActivity.kt") || file.absolutePath.contains("AndroidManifest.xml")) {
+                    def goalPath = file.absolutePath.contains("App.kt") || file.absolutePath.contains("MainActivity.kt") ?
+                            javaPackagePathFile.absolutePath + "/${file.name}" :
+                            file.absolutePath.replace(tempPathFile.absolutePath, pluginFolder.absolutePath)
+                    changePackageNameAndCopy(packageName, file.absolutePath, goalPath)
+                } else {
+                    def goalFile = new File(file.absolutePath.replace(tempPathFile.absolutePath, pluginFolder.absolutePath))
+                    if (!goalFile.exists())
+                        GFileUtils.copyFile(file, goalFile)
+                }
+            }
+            // ignore file
+            createIgnoreFile(pluginFolder.absolutePath)
+        }
+
+    }
+}
+
+def changePackageNameAndCopy(packageName, filePath, goalPath) {
+    def sourceFile = new File(filePath)
+    if (sourceFile.exists()) {
+        //读取文件，并装进List。
+        def list = []
+        sourceFile.withReader('UTF-8') { reader ->
+            reader.eachLine {
+                def line = it
+                if (line.contains('template.com.co')) {
+                    line = line.replace("template.com.co", packageName)
+                }
+                list.add(line + "\n")
+            }
+        }
+        def goalFile = new File(goalPath)
+        if (!goalFile.exists()) goalFile.createNewFile()
+        goalFile.withWriter('UTF-8') { writer ->
+            list.each {
+                writer.write(it)
+            }
+        }
+    }
+}
+
+def createIgnoreFile(goalFolder) {
+    def goalFile = new File(goalFolder, '.gitignore')
+    if (!goalFile.exists()) goalFile.createNewFile()
+    println(".gitignore:" + goalFile.absolutePath)
+    goalFile.withWriter('UTF-8') { writer ->
+        writer.write("/build")
+    }
+}

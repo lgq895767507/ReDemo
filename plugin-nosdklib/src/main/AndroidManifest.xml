@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tiangong.plugin.nosdklib">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/logo"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.qihoo360.plugin.name"
+            android:value="${applicationId}" />
+        <meta-data
+            android:name="com.qihoo360.plugin.version.low"
+            android:value="10" />
+        <meta-data
+            android:name="com.qihoo360.plugin.version.high"
+            android:value="10" />
+        <meta-data
+            android:name="com.qihoo360.framework.ver"
+            android:value="4" />
+        <meta-data
+            android:name="com.qihoo360.plugin.version.ver"
+            android:value="${pluginVer}" />
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
