@@ -1,0 +1,41 @@
+ext.deps = [:]
+def versions = [:]
+versions.support = "26.1.0"
+versions.constraint_layout = "1.0.2"
+versions.okhttp = "3.8.1"
+versions.rxandroid = "2.0.2"
+versions.rxjava = "2.1.12"
+versions.retrofit = "2.3.0"
+versions.gson = "2.8.2"
+versions.eventbus = "3.1.1"
+versions.glide = "3.8.0"
+versions.banner = "1.4.10"
+versions.kotlin = "1.2.41"
+
+def support = [:]
+support.annotations = "com.android.support:support-annotations:$versions.support"
+support.app_compat = "com.android.support:appcompat-v7:$versions.support"
+support.recyclerview = "com.android.support:recyclerview-v7:$versions.support"
+support.design = "com.android.support:design:$versions.support"
+support.v4 = "com.android.support:support-v4:$versions.support"
+support.constraint_layout = "com.android.support.constraint:constraint-layout:$versions.constraint_layout"
+deps.support = support
+
+deps.okhttp = "com.squareup.okhttp3:okhttp:$versions.okhttp"
+deps.rxandroid = "io.reactivex.rxjava2:rxandroid:$versions.rxandroid"
+deps.rxjava = "io.reactivex.rxjava2:rxjava:$versions.rxjava"
+deps.retrofit = "com.squareup.retrofit2:retrofit:$versions.retrofit"
+deps.eventbus = "org.greenrobot:eventbus:$versions.eventbus"
+deps.gson = "com.google.code.gson:gson:$versions.gson"
+deps.glide = "com.github.bumptech.glide:glide:$versions.glide"
+deps.banner = "com.youth.banner:banner:${versions.banner}"
+
+def kotlin = [:]
+kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin"
+kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
+kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
+
+deps.kotlin = kotlin
+
+

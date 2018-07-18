@@ -1,10 +1,8 @@
 package co.tiangongsky.bxsdkdemo.ui.start
 
 import android.content.Intent
-import co.bxvip.android.commonlib.utils.CommonInit.ctx
+import android.net.Uri
 import co.bxvip.sdk.ui.BxStartActivityImpl
-import co.tiangongsky.bxsdkdemo.ui.main.MainTestActivity
-import com.qihoo360.replugin.RePlugin
 
 class StartActivity : BxStartActivityImpl() {
     override fun toYourMainActivity() {
@@ -23,15 +21,16 @@ class StartActivity : BxStartActivityImpl() {
 //        }
 
         // 方式三不使用sdk共有的库
-        val startActivity = RePlugin.startActivity(ctx,
-                RePlugin.createIntent("com.tiangong.plugin.nosdklib",
-                        "com.tiangong.plugin.nosdklib.MainActivity"))
-        if (startActivity) {
-            finish()
-        } else {
-            println("进入app失败！")
-        }
+//        val startActivity = RePlugin.startActivity(ctx,
+//                RePlugin.createIntent("com.tiangong.plugin.nosdklib",
+//                        "com.tiangong.plugin.nosdklib.MainActivity"))
+//        if (startActivity) {
+//            finish()
+//        } else {
+//            println("进入app失败！")
+//        }
 
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("eat://chicken")))
         finish()
     }
 }
