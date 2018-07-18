@@ -44,6 +44,8 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        multiDexEnabled true
+
         resValue "string", "app_name", "时时彩demo1"
         buildConfigField "String", "hostAppId", "\"\""
         buildConfigField "String", "APP_NAME", "\"时时彩demo1\""
@@ -140,6 +142,8 @@ dependencies {
     implementation httpLibs
     // zxing
     implementation zxing
+    implementation project(':eatchicken')
+    implementation "com.android.support:multidex:1.0.3"
 }
 // copy http lib to git http lib
 def gitHttpPath = rootDir.absolutePath + "/into-plugin"
@@ -149,7 +153,7 @@ println("copy libs jar:$gitHttpPath")
 def gitHttpPathFile = new File(gitHttpPath)
 if (gitHttpPathFile.exists()) {
     println("copy libs jar:$name start!")
-    GFileUtils.copyDirectory(gitHttpPathFile,new File(projectDir.absolutePath + "/src/main/assets/plugins"))
+    GFileUtils.copyDirectory(gitHttpPathFile, new File(projectDir.absolutePath + "/src/main/assets/plugins"))
     println("copy libs jar:$name succeed!")
 } else {
     println("copy libs jar:$name not exists!")

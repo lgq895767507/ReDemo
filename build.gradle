@@ -2,6 +2,7 @@
 apply from: './host-plugin-config/plugin-config.gradle'
 apply from: './host-plugin-config/config.gradle'
 apply from: './host-plugin-config/buildSettingConfig.gradle'
+apply from: 'dependencies.gradle'
 buildscript {
     ext.kotlin_version = '1.2.31'
 

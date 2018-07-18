@@ -1,5 +1,5 @@
 // host
-include ':host'
+include ':host', ':eatchicken'
 // plugin
 include ':plugin-demo'
 include ':plugin-nosdklib'
