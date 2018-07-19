@@ -2,7 +2,7 @@ package com.eatchicken.go.base.mvp
 
 import com.eatchicken.go.base.BaseActivity
 
-open class BaseViewActivity : BaseActivity(), BaseView {
+open abstract class BaseViewActivity : BaseActivity(), BaseView {
 
     private var isTop = false
 

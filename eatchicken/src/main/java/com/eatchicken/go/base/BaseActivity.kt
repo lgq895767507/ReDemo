@@ -7,7 +7,9 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import com.eatchicken.go.R
 import com.eatchicken.go.utils.GetSystemUtils
+import kotlinx.android.synthetic.main.layout_base_activity.*
 
 abstract class BaseActivity : Activity() {
 
@@ -37,6 +39,13 @@ abstract class BaseActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.layout_base_activity)
+        val layoutId = setLayoutId()
+        if (layoutId > 0) {
+            val contentView = layoutInflater.inflate(layoutId, base_content, false)
+            base_content.addView(contentView)
+            initView(contentView, savedInstanceState)
+        }
         val supportActionBar = actionBar
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true)
@@ -85,4 +94,24 @@ abstract class BaseActivity : Activity() {
             window.statusBarColor = Color.TRANSPARENT
         }
     }
+
+    fun setTitleContent(strRes: Int) {
+        setTitleContent(getString(strRes))
+    }
+
+    fun setTitleContent(title: String) {
+        tv_title.text = title
+    }
+
+    fun visibleTitle() {
+        base_title.visibility = View.VISIBLE
+    }
+
+    fun goneTitle() {
+        base_title.visibility = View.GONE
+    }
+
+    abstract fun setLayoutId(): Int
+
+    abstract fun initView(view: View, savedInstanceState: Bundle?)
 }

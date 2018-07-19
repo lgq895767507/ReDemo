@@ -1,4 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <style name="DefaultTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/black3</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColorHint">@color/black9</item>
+    </style>
+
+    <style name="BigTextViewStyle">
+        <item name="android:textColor">@color/black3</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColorHint">@color/black3</item>
+    </style>
+
+    <style name="MiddleTextViewStyle">
+        <item name="android:textColor">@color/black3</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColorHint">@color/black9</item>
+    </style>
+
+    <style name="SubMiddleTextViewStyle">
+        <item name="android:textColor">@color/black6</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColorHint">@color/black9</item>
+    </style>
+
+    <style name="GrayMiddleTextViewStyle">
+        <item name="android:textColor">@color/black9</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColorHint">@color/black9</item>
+    </style>
+
+    <style name="SmallTextViewStyle">
+        <item name="android:textColor">@color/black3</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+
 </resources>

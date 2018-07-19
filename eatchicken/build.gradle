@@ -29,10 +29,14 @@ dependencies {
 
     implementation deps.kotlin.stdlib
     implementation deps.support.constraint_layout
+    implementation newSupportV4AndRecyclerViewAar
     implementation deps.glide
     implementation deps.gson
     implementation deps.okhttp
     implementation deps.retrofit
     implementation deps.rxandroid
     implementation deps.rxjava
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 }
