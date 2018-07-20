@@ -7,5 +7,6 @@ package com.eatchicken.go.model
 data class MainListModel(
         val title: String,
         val description: String,
+        val date: String,
         val picture: String,
         val routeUrl: String)
