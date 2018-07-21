@@ -1,13 +1,11 @@
 package com.eatchicken.go.core.main
 
-import android.app.Fragment
-import android.app.FragmentTransaction
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.view.View
+import com.eatchicken.go.FrameCore
 import com.eatchicken.go.R
 import com.eatchicken.go.base.mvp.BaseViewActivity
-import com.eatchicken.go.net.retrofit.MyRetrofit
-import kotlinx.android.synthetic.main.layout_base_activity.*
 
 class MainActivity : BaseViewActivity() {
 
@@ -16,18 +14,17 @@ class MainActivity : BaseViewActivity() {
     }
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
-        MyRetrofit.initClient(application)
-        val transaction: FragmentTransaction = fragmentManager.beginTransaction()
-        var fragment: Fragment
-        try {
-            fragment = fragmentManager.findFragmentByTag(MainFragment::class.java.simpleName)
-            transaction.show(fragment)
-        } catch (e: Exception) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        FrameCore.init(application, "EatChicken")
+        setTitle(R.string.lucky_air_ship)
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        var fragment = supportFragmentManager.findFragmentByTag(MainFragment::class.java.simpleName)
+        if (fragment == null) {
             fragment = MainFragment.newInstance()
             transaction.add(R.id.content, fragment)
+        } else {
+            transaction.show(fragment)
         }
         transaction.commit()
-        tv_title.text = getString(R.string.lucky_air_ship)
     }
-
 }

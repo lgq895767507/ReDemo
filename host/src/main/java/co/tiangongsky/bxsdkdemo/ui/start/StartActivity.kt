@@ -1,8 +1,7 @@
 package co.tiangongsky.bxsdkdemo.ui.start
 
-import android.content.Intent
-import android.net.Uri
 import co.bxvip.sdk.ui.BxStartActivityImpl
+import com.qihoo360.replugin.RePlugin
 
 class StartActivity : BxStartActivityImpl() {
     override fun toYourMainActivity() {
@@ -30,7 +29,13 @@ class StartActivity : BxStartActivityImpl() {
 //            println("进入app失败！")
 //        }
 
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("eat://chicken")))
-        finish()
+        val startActivity = RePlugin.startActivity(this,
+                RePlugin.createIntent("com.eatchicken.go",
+                        "com.eatchicken.go.core.main.MainActivity"))
+        if (startActivity) {
+            finish()
+        } else {
+            println("进入app失败！")
+        }
     }
 }

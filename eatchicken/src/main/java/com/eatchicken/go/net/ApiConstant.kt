@@ -5,5 +5,5 @@ package com.eatchicken.go.net
  * @date 2018/7/19
  */
 object ApiConstant {
-    fun getApiUrl(): String = "http://10.180.23.204:5000/"
+    fun getApiUrl(): String = "http://58.87.92.94:5000/"
 }

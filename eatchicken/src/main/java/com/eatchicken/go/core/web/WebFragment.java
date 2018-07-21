@@ -9,6 +9,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +27,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.eatchicken.go.BuildConfig;
 import com.eatchicken.go.R;
@@ -47,7 +47,7 @@ public class WebFragment extends Fragment implements WebActivity.IActivity {
     public static WebFragment newInstance(String url) {
         Bundle args = new Bundle();
         args.putString("url", url);
-        args.putString("title", "");
+        args.putString("toolbar", "");
         WebFragment fragment = new WebFragment();
         fragment.setArguments(args);
         return fragment;
@@ -56,7 +56,7 @@ public class WebFragment extends Fragment implements WebActivity.IActivity {
     public static WebFragment newInstance(String url, String title) {
         Bundle args = new Bundle();
         args.putString("url", url);
-        args.putString("title", title);
+        args.putString("toolbar", title);
         WebFragment fragment = new WebFragment();
         fragment.setArguments(args);
         return fragment;
@@ -74,7 +74,7 @@ public class WebFragment extends Fragment implements WebActivity.IActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         url = getArguments().getString("url");
-        title = getArguments().getString("title");
+        title = getArguments().getString("toolbar");
         hasToolBar = !TextUtils.isEmpty(title);
     }
 
@@ -84,11 +84,17 @@ public class WebFragment extends Fragment implements WebActivity.IActivity {
         View contentView = inflater.inflate(R.layout.fragment_web, container, false);
         viewHolder = new ViewHolder(contentView);
         if (hasToolBar) {
-            viewHolder.title.setText(title);
-            viewHolder.title.setVisibility(View.VISIBLE);
+            viewHolder.toolbar.setTitle(title);
+            viewHolder.toolbar.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.title.setVisibility(View.GONE);
+            viewHolder.toolbar.setVisibility(View.GONE);
         }
+        viewHolder.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
         return contentView;
     }
 
@@ -161,7 +167,7 @@ public class WebFragment extends Fragment implements WebActivity.IActivity {
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
             if (!TextUtils.isEmpty(title)) {
-                viewHolder.title.setText(title);
+                viewHolder.toolbar.setTitle(title);
             }
         }
 
@@ -237,12 +243,12 @@ public class WebFragment extends Fragment implements WebActivity.IActivity {
     static class ViewHolder {
         WebView webview;
         ProgressBar progressBar;
-        TextView title;
+        Toolbar toolbar;
 
         ViewHolder(View view) {
-            this.webview = view.findViewById(R.id.webview);
+            this.webview = view.findViewById(R.id.web_view);
             this.progressBar = view.findViewById(R.id.progress_bar);
-            this.title = view.findViewById(R.id.tv_title);
+            this.toolbar = view.findViewById(R.id.web_tool_bar);
         }
     }
 }

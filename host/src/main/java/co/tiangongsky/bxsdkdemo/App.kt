@@ -1,11 +1,8 @@
 package co.tiangongsky.bxsdkdemo
 
-import android.content.Context
-import android.support.multidex.MultiDex
 import cn.jpush.android.api.CustomPushNotificationBuilder
 import cn.jpush.android.api.JPushInterface
 import co.bxvip.sdk.BxRePluginAppLicationMakeImpl
-import com.eatchicken.go.FrameCore
 
 /**
  *
@@ -45,13 +42,4 @@ class App : BxRePluginAppLicationMakeImpl() {
         JPushInterface.setDefaultPushNotificationBuilder(builder)
     }
 
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        FrameCore.init(this, "EatChicken")
-    }
 }

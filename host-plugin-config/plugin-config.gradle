@@ -17,16 +17,23 @@ ext {
     // 方式2 的接入模式配置
     pluginConfigs = [
             // plugin-demo 工程
-            "plugin-demo": [
+//            "plugin-demo": [
+//                    pliginIsInner    : true, // 内置，外置插件
+//                    pluginPackageName: 'com.tiangong.android.plugin.demo', // 插件的包名
+//                    pluginVersion    : 100, // 版本号
+//                    pluginVer        : 100, // 插件的版本 ， 升级的需要
+//                    pluginVersionName: "1.0.0", // 版本名称
+//            ],// plugin-nosdklib 工程
+//            "plugin-nosdklib": [
+//                    pliginIsInner    : true, // 内置，外置插件
+//                    pluginPackageName: 'com.tiangong.plugin.nosdklib', // 插件的包名
+//                    pluginVersion    : 100, // 版本号
+//                    pluginVer        : 100, // 插件的版本 ， 升级的需要
+//                    pluginVersionName: "1.0.0", // 版本名称
+//            ],
+            "eatchicken": [
                     pliginIsInner    : true, // 内置，外置插件
-                    pluginPackageName: 'com.tiangong.android.plugin.demo', // 插件的包名
-                    pluginVersion    : 100, // 版本号
-                    pluginVer        : 100, // 插件的版本 ， 升级的需要
-                    pluginVersionName: "1.0.0", // 版本名称
-            ],// plugin-nosdklib 工程
-            "plugin-nosdklib": [
-                    pliginIsInner    : true, // 内置，外置插件
-                    pluginPackageName: 'com.tiangong.plugin.nosdklib', // 插件的包名
+                    pluginPackageName: 'com.eatchicken.go', // 插件的包名
                     pluginVersion    : 100, // 版本号
                     pluginVer        : 100, // 插件的版本 ， 升级的需要
                     pluginVersionName: "1.0.0", // 版本名称

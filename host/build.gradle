@@ -142,8 +142,6 @@ dependencies {
     implementation httpLibs
     // zxing
     implementation zxing
-    implementation project(':eatchicken')
-    implementation "com.android.support:multidex:1.0.3"
 }
 // copy http lib to git http lib
 def gitHttpPath = rootDir.absolutePath + "/into-plugin"

@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <!--默认带actionBar的主题 -->
+    <style name="AppThemeCompat" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/bg</item>
+    </style>
+
+    <!--默认不带actionBar的主题-->
+    <style name="AppThemeCompatNoActionBar" parent="AppThemeCompat">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!--默认全屏的主题-->
+    <style name="AppThemeCompatFullScreenTransparent" parent="AppThemeCompatNoActionBar">
+        <item name="android:colorBackground">@color/transparent</item>
+    </style>
+
+    <style name="ToolTheme" parent="AppThemeCompatNoActionBar">
+        <item name="colorControlNormal">@color/black3</item>
+    </style>
+
     <style name="DefaultTextViewStyle" parent="android:Widget.TextView">
         <item name="android:textColor">@color/black3</item>
         <item name="android:textSize">16sp</item>

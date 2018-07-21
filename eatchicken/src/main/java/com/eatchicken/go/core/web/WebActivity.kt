@@ -11,7 +11,6 @@ class WebActivity : BaseViewActivity() {
     override fun setLayoutId(): Int = R.layout.activity_web
 
     override fun initView(view: View, savedInstanceState: Bundle?) {
-        goneTitle()
         val url = intent.getStringExtra(WEB_URL_KEY)
         val title = intent.getStringExtra(WEB_TITLE_KEY)
         fragmentManager.beginTransaction().add(R.id.activity_tbs, WebFragment.newInstance(url, title)).commitAllowingStateLoss()

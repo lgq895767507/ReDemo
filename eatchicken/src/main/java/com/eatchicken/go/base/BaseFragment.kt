@@ -1,7 +1,7 @@
 package com.eatchicken.go.base
 
-import android.app.Fragment
 import android.app.ProgressDialog
+import android.support.v4.app.Fragment
 
 abstract class BaseFragment : Fragment() {
 

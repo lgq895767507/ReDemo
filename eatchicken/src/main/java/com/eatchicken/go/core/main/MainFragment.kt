@@ -1,47 +1,22 @@
 package com.eatchicken.go.core.main
 
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.eatchicken.go.R
 import com.eatchicken.go.base.mvp.BaseViewFragment
-import com.eatchicken.go.model.MainListModel
 import com.eatchicken.go.model.TabModel
-import com.eatchicken.go.net.model.NLoadMainReq
-import com.eatchicken.go.utils.RecyclerViewLoadMoreHelper
 import com.eatchicken.go.utils.ToastUtils
 import kotlinx.android.synthetic.main.fragment_main.*
 
-class MainFragment : BaseViewFragment(), MainContract.View, MainTabContract.View, MainListContract.View {
 
-    private val presenter: MainContract.Presenter by lazy { MainPresenter() }
+class MainFragment : BaseViewFragment(), MainTabContract.View {
+
     private val mainTabPresenter: MainTabContract.Presenter by lazy { MainTabPresenter() }
-    private val mainListPresenter: MainListContract.Presenter by lazy { MainListPresenter() }
-
-    private val tabList: MutableList<TabModel> = arrayListOf()
-    private val tabAdapter: TabAdapter = TabAdapter(tabList)
-
-    private val mainDataList: MutableList<MainListModel> = arrayListOf()
-    private val mainListAdapter: MainListAdapter = MainListAdapter(mainDataList)
-
-    private val mainListReq: NLoadMainReq = NLoadMainReq()
-
-    private val loadMoreHelper: RecyclerViewLoadMoreHelper by lazy {
-        RecyclerViewLoadMoreHelper(rv_data, srl_data, object : RecyclerViewLoadMoreHelper.Listener {
-            override fun onRefreshListener() {
-                mainListReq.pageIndex = loadMoreHelper.pageIndex
-                mainListPresenter.loadMainList(false, mainListReq)
-            }
-
-            override fun onStartLoadMore() {
-                mainListReq.pageIndex = loadMoreHelper.pageIndex
-                mainListPresenter.loadMainList(true, mainListReq)
-            }
-        })
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
@@ -49,62 +24,42 @@ class MainFragment : BaseViewFragment(), MainContract.View, MainTabContract.View
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        presenter.attachView(this)
         mainTabPresenter.attachView(this)
-        mainListPresenter.attachView(this)
-
         mainTabPresenter.loadMainTabs()
-
-        tabAdapter.onTabSelectedListener = object : TabAdapter.OnTabSelectedListener {
-            override fun onTabSelected(position: Int) {
-                mainListReq.type = tabList[position].tabId
-                loadMoreHelper.startSwipeRefresh()
-            }
-        }
-        rv_tab.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        rv_tab.adapter = tabAdapter
-
-        rv_data.layoutManager = LinearLayoutManager(activity)
-        rv_data.adapter = mainListAdapter
-        rv_data.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
     }
 
     override fun onStop() {
         super.onStop()
-        presenter.onStop()
         mainTabPresenter.onStop()
-        mainListPresenter.onStop()
     }
 
     override fun loadMainTabsSuccess(mainTabs: List<TabModel>) {
-        tabList.clear()
-        tabList.addAll(mainTabs)
-        tabAdapter.notifyDataSetChanged()
         if (mainTabs.isNotEmpty()) {
-            mainListReq.type = mainTabs[0].tabId
-            mainListPresenter.loadMainList(false, mainListReq)
+
+            mainTabs.map {
+                val tab = tb_type?.newTab()
+                tab?.text = it.tabName
+                tb_type?.addTab(tab!!)
+            }
+
+            val linearLayout = tb_type.getChildAt(0) as LinearLayout
+            linearLayout.showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
+            linearLayout.dividerPadding = 50
+            linearLayout.dividerDrawable = ContextCompat.getDrawable(activity, R.drawable.shape_tab_divider)
+
+            vp_data.adapter = object : FragmentStatePagerAdapter(childFragmentManager) {
+                override fun getItem(position: Int) = MainItemPageFragment.newInstance(mainTabs[position].tabId)
+
+                override fun getCount() = mainTabs.size
+
+                override fun getPageTitle(position: Int) = mainTabs[position].tabName
+            }
+            vp_data.offscreenPageLimit = 8
+            tb_type.setupWithViewPager(vp_data)
         }
     }
 
     override fun loadMainTabsFailed(e: Throwable) {
-        ToastUtils.showToast(e.message)
-    }
-
-    override fun loadMainListSuccess(isLoadMore: Boolean, dataList: List<MainListModel>) {
-        loadMoreHelper.loadCompleted(dataList.size)
-        if (isLoadMore) {
-            val startIndex = mainDataList.size
-            mainDataList.addAll(dataList)
-            mainListAdapter.notifyItemRangeInserted(startIndex, dataList.size)
-        } else {
-            mainDataList.clear()
-            mainDataList.addAll(dataList)
-            mainListAdapter.notifyDataSetChanged()
-        }
-    }
-
-    override fun loadMainListFailed(isLoadMore: Boolean, e: Throwable) {
-        loadMoreHelper.loadFailed()
         ToastUtils.showToast(e.message)
     }
 

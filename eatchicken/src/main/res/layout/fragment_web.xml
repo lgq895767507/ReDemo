@@ -4,27 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/base_title"
+    <android.support.v7.widget.Toolbar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/web_tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/colorPrimary"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_title"
-            style="@style/BigTextViewStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="60dp"
-            android:layout_marginStart="60dp"
-            android:gravity="center"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/white"/>
-
-    </FrameLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:navigationIcon="@drawable/ic_web_finish"
+        app:theme="@style/ToolTheme">
+    </android.support.v7.widget.Toolbar>
 
     <!--位于顶部，在WebView上面，加载完成后gone掉-->
     <ProgressBar
@@ -36,7 +24,7 @@
         android:progressDrawable="@drawable/progress_bar_states"/>
 
     <WebView
-        android:id="@+id/webview"
+        android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"/>
