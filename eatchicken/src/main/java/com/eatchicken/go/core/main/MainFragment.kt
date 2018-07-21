@@ -1,6 +1,7 @@
 package com.eatchicken.go.core.main
 
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -37,7 +38,7 @@ class MainFragment : BaseViewFragment(), MainContract.View, MainTabContract.View
 
             override fun onStartLoadMore() {
                 mainListReq.pageIndex = loadMoreHelper.pageIndex
-                mainListPresenter.loadMainList(false, mainListReq)
+                mainListPresenter.loadMainList(true, mainListReq)
             }
         })
     }
@@ -53,7 +54,6 @@ class MainFragment : BaseViewFragment(), MainContract.View, MainTabContract.View
         mainListPresenter.attachView(this)
 
         mainTabPresenter.loadMainTabs()
-        mainListPresenter.loadMainList(false, mainListReq)
 
         tabAdapter.onTabSelectedListener = object : TabAdapter.OnTabSelectedListener {
             override fun onTabSelected(position: Int) {
@@ -66,6 +66,7 @@ class MainFragment : BaseViewFragment(), MainContract.View, MainTabContract.View
 
         rv_data.layoutManager = LinearLayoutManager(activity)
         rv_data.adapter = mainListAdapter
+        rv_data.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
     }
 
     override fun onStop() {
@@ -79,6 +80,10 @@ class MainFragment : BaseViewFragment(), MainContract.View, MainTabContract.View
         tabList.clear()
         tabList.addAll(mainTabs)
         tabAdapter.notifyDataSetChanged()
+        if (mainTabs.isNotEmpty()) {
+            mainListReq.type = mainTabs[0].tabId
+            mainListPresenter.loadMainList(false, mainListReq)
+        }
     }
 
     override fun loadMainTabsFailed(e: Throwable) {
@@ -86,21 +91,21 @@ class MainFragment : BaseViewFragment(), MainContract.View, MainTabContract.View
     }
 
     override fun loadMainListSuccess(isLoadMore: Boolean, dataList: List<MainListModel>) {
+        loadMoreHelper.loadCompleted(dataList.size)
         if (isLoadMore) {
             val startIndex = mainDataList.size
             mainDataList.addAll(dataList)
-            mainListAdapter.notifyItemRangeInserted(startIndex, mainDataList.size)
+            mainListAdapter.notifyItemRangeInserted(startIndex, dataList.size)
         } else {
             mainDataList.clear()
             mainDataList.addAll(dataList)
             mainListAdapter.notifyDataSetChanged()
         }
-        loadMoreHelper.loadCompleted(dataList.size)
     }
 
     override fun loadMainListFailed(isLoadMore: Boolean, e: Throwable) {
-        ToastUtils.showToast(e.message)
         loadMoreHelper.loadFailed()
+        ToastUtils.showToast(e.message)
     }
 
     companion object {

@@ -8,5 +8,4 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:paddingEnd="8dp"
-    android:paddingStart="8dp"
-    android:textColor="@color/selector_checked_text_color"/>
+    android:paddingStart="8dp"/>

@@ -7,6 +7,7 @@ import android.view.View
 import com.eatchicken.go.R
 import com.eatchicken.go.base.mvp.BaseViewActivity
 import com.eatchicken.go.net.retrofit.MyRetrofit
+import kotlinx.android.synthetic.main.layout_base_activity.*
 
 class MainActivity : BaseViewActivity() {
 
@@ -26,6 +27,7 @@ class MainActivity : BaseViewActivity() {
             transaction.add(R.id.content, fragment)
         }
         transaction.commit()
+        tv_title.text = getString(R.string.lucky_air_ship)
     }
 
 }

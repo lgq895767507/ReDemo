@@ -1,11 +1,13 @@
 package com.eatchicken.go.core.main
 
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.eatchicken.go.R
+import com.eatchicken.go.core.web.WebActivity
 import com.eatchicken.go.model.MainListModel
 import kotlinx.android.synthetic.main.item_main_list_item.view.*
 
@@ -27,6 +29,11 @@ class MainListAdapter(private val data: List<MainListModel>) : RecyclerView.Adap
         itemView.tv_description.text = itemModel.description
         itemView.tv_date.text = itemModel.date
         Glide.with(itemView.context).load(itemModel.picture).into(itemView.iv_img)
+        itemView.setOnClickListener {
+            itemView.context.startActivity(Intent(itemView.context, WebActivity::class.java).apply {
+                putExtras(WebActivity.setArguments(itemView.context.getString(R.string.lucky_air_ship), itemModel.routeUrl))
+            })
+        }
     }
 
     inner class MainItemHolder(view: View) : RecyclerView.ViewHolder(view)

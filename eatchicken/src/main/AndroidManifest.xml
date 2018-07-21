@@ -17,6 +17,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".core.web.WebActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 </manifest>
 
