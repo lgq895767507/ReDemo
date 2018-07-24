@@ -23,5 +23,6 @@
     <color name="grey_text_color">#999999</color>
 
     <color name="transparent">#00000000</color>
+    <color name="translucent">#20000000</color>
 
 </resources>

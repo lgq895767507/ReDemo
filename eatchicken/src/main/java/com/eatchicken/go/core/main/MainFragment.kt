@@ -48,13 +48,13 @@ class MainFragment : BaseViewFragment(), MainTabContract.View {
             linearLayout.dividerDrawable = ContextCompat.getDrawable(activity, R.drawable.shape_tab_divider)
 
             vp_data.adapter = object : FragmentStatePagerAdapter(childFragmentManager) {
-                override fun getItem(position: Int) = MainItemPageFragment.newInstance(mainTabs[position].tabId)
+                override fun getItem(position: Int) = MainItemPageFragment.newInstance(mainTabs[position].tabId, position)
 
                 override fun getCount() = mainTabs.size
 
                 override fun getPageTitle(position: Int) = mainTabs[position].tabName
             }
-            vp_data.offscreenPageLimit = 8
+            vp_data.offscreenPageLimit = mainTabs.size
             tb_type.setupWithViewPager(vp_data)
         }
     }
@@ -64,7 +64,6 @@ class MainFragment : BaseViewFragment(), MainTabContract.View {
     }
 
     companion object {
-
         fun newInstance(): MainFragment {
             return MainFragment()
         }
