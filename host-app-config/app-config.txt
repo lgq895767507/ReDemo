@@ -17,7 +17,12 @@ bxvipqa=暴雪QA=com.bxvip.app.bxvipqa env=1 type=2 desc=发现新版本 a58f18e
 // demo 迅盈 正式包 测试包  演示使用
 demoapp1=迅盈时时彩demo1=co.tiangongsky.bxsdk.demoapp1 env=1 type=2 desc=1.第一版测试 d73f39a36e5a3b948ef6fe7b copyLogo=sdk
 // 跳转（未开通） 马甲内容的测试包 测试包  演示使用
-majiassc=幸运飞艇=com.shishicai.debug env=1 type=2 desc=1.第一版测试 95b48102f336e21ff2ce688edebug startPng=xyftstart copyLogo=xyft
+// 百度
+majiassc_bd=幸运飞艇=com.lucky.air.ship.bd env=1 type=2 desc=1.第一版测试 0a02c2a0517117bd7dff9a17 startPng=xyftstart copyLogo=xyft
+// 360
+majiassc_360=幸运飞艇=com.lucky.air.ship env=1 type=2 desc=1.第一版测试 f11b2cfc608aa5b2b39f035e startPng=xyftstart copyLogo=xyft
+// 魅族
+majiassc_mz=幸运飞艇=com.lucky.air.ship.mz env=1 type=2 desc=1.第一版测试 f2922f6e0957c87349280f9d startPng=xyftstart copyLogo=xyft
 
 // *****************************需要自己配置包名***********************************
 //majiassc=马甲时时彩=co.tiangongsky.bxsdk.majiassc2 env=1 type=2 desc=1.第一版测试 d73f39a36e5a3b948ef6fe7b startPng=majiasscstart copyLogo=sdk
