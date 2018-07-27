@@ -1,10 +1,19 @@
 package com.eatchicken.go.base.mvp
 
+import android.os.Bundle
+import com.eatchicken.go.FrameCore
 import com.eatchicken.go.base.BaseActivity
 
-open abstract class BaseViewActivity : BaseActivity(), BaseView {
+abstract class BaseViewActivity : BaseActivity(), BaseView {
 
     private var isTop = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (!FrameCore.isInitialized()) {
+            FrameCore.init(application, "EatChicken")
+        }
+    }
 
     override fun onResume() {
         super.onResume()
