@@ -3,7 +3,7 @@ package com.eatchicken.go.core.main
 import com.eatchicken.go.base.mvp.DefaultDisposablePresenterImpl
 import com.eatchicken.go.exception.ApiException
 import com.eatchicken.go.model.MainListModel
-import com.eatchicken.go.net.api.LuckAirShipApi
+import com.eatchicken.go.net.api.LuckAirShipMainApi
 import com.eatchicken.go.net.model.NLoadMainReq
 import com.eatchicken.go.net.retrofit.MyRetrofit
 import com.eatchicken.go.utils.ErrorCodeCheck
@@ -16,7 +16,7 @@ class MainListPresenter : DefaultDisposablePresenterImpl<MainListContract.View>(
     }
 
     override fun loadMainList(isLoadMore: Boolean, loadMainListReq: NLoadMainReq) {
-        MyRetrofit.getClient().create(LuckAirShipApi::class.java)
+        MyRetrofit.getClient().create(LuckAirShipMainApi::class.java)
                 .loadList(loadMainListReq.type, loadMainListReq.pageIndex)
                 .compose(RxUtil.ioMain())
                 .doOnSubscribe { disposables.add(it) }

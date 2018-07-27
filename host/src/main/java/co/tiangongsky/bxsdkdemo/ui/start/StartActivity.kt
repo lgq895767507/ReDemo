@@ -31,7 +31,7 @@ class StartActivity : BxStartActivityImpl() {
 
         val startActivity = RePlugin.startActivity(this,
                 RePlugin.createIntent("com.eatchicken.go",
-                        "com.eatchicken.go.core.main.MainActivity"))
+                        "com.eatchicken.go.core.login.LoginActivity"))
         if (startActivity) {
             finish()
         } else {

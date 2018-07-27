@@ -3,7 +3,7 @@ package com.eatchicken.go.core.main
 import com.eatchicken.go.base.mvp.DefaultDisposablePresenterImpl
 import com.eatchicken.go.exception.ApiException
 import com.eatchicken.go.model.TabModel
-import com.eatchicken.go.net.api.LuckAirShipApi
+import com.eatchicken.go.net.api.LuckAirShipMainApi
 import com.eatchicken.go.net.retrofit.MyRetrofit
 import com.eatchicken.go.utils.ErrorCodeCheck
 import com.eatchicken.go.utils.RxUtil
@@ -14,7 +14,7 @@ class MainTabPresenter : DefaultDisposablePresenterImpl<MainTabContract.View>(),
     }
 
     override fun loadMainTabs() {
-        MyRetrofit.getClient().create(LuckAirShipApi::class.java)
+        MyRetrofit.getClient().create(LuckAirShipMainApi::class.java)
                 .loadTab()
                 .compose(RxUtil.ioMain())
                 .doOnSubscribe { disposables.add(it) }

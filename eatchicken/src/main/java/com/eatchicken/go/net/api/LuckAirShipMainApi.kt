@@ -11,7 +11,7 @@ import retrofit2.http.Query
  * @author zhangnan
  * @date 2018/7/21
  */
-interface LuckAirShipApi {
+interface LuckAirShipMainApi {
 
     @GET("lottery_new/get_news_types")
     fun loadTab(): Observable<NTabResp>

@@ -3,7 +3,7 @@ package com.eatchicken.go.core.main
 import com.eatchicken.go.base.mvp.DefaultDisposablePresenterImpl
 import com.eatchicken.go.exception.ApiException
 import com.eatchicken.go.model.BannerModel
-import com.eatchicken.go.net.api.LuckAirShipApi
+import com.eatchicken.go.net.api.LuckAirShipMainApi
 import com.eatchicken.go.net.retrofit.MyRetrofit
 import com.eatchicken.go.utils.ErrorCodeCheck
 import com.eatchicken.go.utils.RxUtil
@@ -14,7 +14,7 @@ class MainBannerPresenter : DefaultDisposablePresenterImpl<MainBannerContract.Vi
     }
 
     override fun loadMainBanner() {
-        MyRetrofit.getClient().create(LuckAirShipApi::class.java)
+        MyRetrofit.getClient().create(LuckAirShipMainApi::class.java)
                 .loadBanner()
                 .compose(RxUtil.ioMain())
                 .doOnSubscribe { disposables.add(it) }

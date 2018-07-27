@@ -2,4 +2,14 @@
     <string name="app_name">EatChicken</string>
     <string name="loading">加载中</string>
     <string name="lucky_air_ship">幸运飞艇</string>
+
+    <string name="input_account">请输入账号</string>
+    <string name="input_password">请输入密码</string>
+    <string name="input_password_again">请再次输入密码</string>
+    <string name="two_password_different">两次输入密码不相同</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="skip">跳过</string>
+
 </resources>
